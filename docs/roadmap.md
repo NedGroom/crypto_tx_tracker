@@ -1,57 +1,144 @@
+# Roadmap Overview
 
+## Roadmap Structure
 
+### Milestone 1: Week 0 (Jan 22-28) - Project Setup
 
-## Jan 22 - 28: Project setup
+- [ ] D1: Tooling planning
+    - Is this a desktop app?
+    - Where are tables stored?
+    - Do we use cloud infrastructure or host server on PC which hosts database and web files, or are web files static on app?
+    - How can I use something like reactnative with the above different options? Maybe its not suitable anyway. The advantage of cloud hosting is that it can be used on the user's phone aswell.
+    - What tools are best for viewing maps of nodes and boxes etc, and allowing the developer to add dropdowns and have certain views of the app like a mindmap.
 
-1. Tooling planning
-    a. Is this a desktop app?
-    b. Where are tables stored?
-    c. Do we use cloud infrastructure or host server on PC which hosts database and web files, or are web files static on app?
-    d. How can I use something like reactnative with the above different options? Maybe its not suitable anyway.
-2. Documentation and roadmapping setup.
-3. Table schema
-    a. Rows to correspond with input data format
-    b. Tables to correspond with types of transaction: eg gbp deposit, cash crypto purchase, cryto transfer, crypto swap, initial balance setup tx. Each of these rows will have some fields automatically populated, and then there will be duplicated rows for the user to confirm if he is happy for thsoe values to be filled out. These transactions will also have a logical timestamp which defaults to the transaction timestamp, but which the user can update such that it reorders the transaction in a useful logical ordering relative to other transactions.
-    c. This is a view which joins all the types of transactions to create the master timeline of transactions, and at each step calculates the pool value of each balance.
+- [ ] D2: Documentation and roadmapping setup
+    - Document what are the best popular design principles, and what are the different aspects of a system which need to be well designed.
+    - Document the user flow.
+    - Document how we can track the state of data (eg verified, complete, processed into generic transactions, etc)
 
-## Jan 29 - Feb 4: Skeleton + app login, first data input view
+- [ ] D3: Design database schema (transaction types, pooling calculations)
+    - Rows to correspond with input data format
+    - Tables to correspond with types of transaction: eg gbp deposit, cash crypto purchase, cryto transfer, crypto swap, initial balance setup tx. Each of these rows will have some fields automatically populated, and then there will be duplicated rows for the user to confirm if he is happy for thsoe values to be filled out. These transactions will also have a logical timestamp which defaults to the transaction timestamp, but which the user can update such that it reorders the transaction in a useful logical ordering relative to other transactions.
+    - This is a view which joins all the types of transactions to create the master timeline of transactions, and at each step calculates the pool value of each balance.
+    - There should be a table for each bank account, and its authentication details
+    - There should be a table for pots per bank (eg Binance BTC, Lloyds gbp, Crypto.com usdt). This is not with balances, just to show what different places there are where money can be held.
 
-1. Host app such that it runs
-2. Setup google OAuth to log in to app 
-3. First view: Exchange authentication page for inputting keys
-4. Second view: Data input section where user either drops in xlsx file, or makes bunches of API requests according to input.
+---
 
-## Jan 5 - 11: Third view: Manage data input chunks
+### Milestone 2: Week 1 (Jan 29 - Feb 4) - Skeleton + Authentication + Data Input
 
-1. Expand each input data chunk to view its representation as a view of its data in the tables. 
-2. Add explanatory notes to each row
-3. For each row, if not existing already, have button to add a row to the table according to its transaction type
+- [ ] F1: Host app such that it runs
 
-## Jan 12 - 18: Fourth view: Total transactions view
+- [ ] F2: Setup google OAuth to log in to app
 
-1. Consolidate all transactions into ordered view
-2. Allow logical timestamp to be adjusted for reordering purposes
-3. Upon every change, pooling calculations are recalculated
-4. Taxable events are highlighted with interested values shown
-5. Export functionality to print and share as pdf or xlsx.
+- [ ] F3: First view - Exchange authentication page for inputting keys
 
-## Jan 19 - 25: Fifth view: Balances as buckets
+- [ ] F4a: Second view - Data input section (file upload - xlsx)
+- [ ] F4b: Second view - Data input section (API requests)
 
-1. Have every location and asset balance as a horizontal colour-coded bucket
-2. Transactions are ordered left-to-right as arrows between buckets. This will show balances of each bucket before and after each transaction.
-3. Transactions can be selected and grouped into txgroups. Each group will then be colour coded to visually associate them.
-4. At any point in time (before/after each transaction) the user can hover the mouse to inspect ratios of assets invested in different locations, and average ROI for each asset at the point in time.
-5. Any purchase transaction can be selected, which opens the Sixth view: Purchase review. This view shows the transaction details, the graph of the bought coin, a list of future transactions affecting balance of the asset, ROI from each transaction, and theoretical ROI if the asset was completely sold today. Also more simplistic view of ROI which is (total out + current total)/(total in).
-6. Alternative to Purchase Review is Asset Review, where we simply see all transactions associated with the asset, and the gains results.
+---
 
-## Jan 26 - Feb 01: 
+### Milestone 3: Week 2 (Feb 5-11) - Data Input Management View
 
-1. Scan the fifth view to identify points where it looks like there is missing information, or missing transactions.
+- [ ] F5a: Third view - Expand each input data chunk to view its representation as a view of its data in the tables
 
-**HMRC UK Self-Assessment Tax Return online submission deadline 31st January 2026.**
+- [ ] F5b: Add explanatory notes to each row
+
+- [ ] F5c: Add generic transaction for each row
+    - For each row, if not existing already, have button to add a row to the table according to its transaction type. 
+    - There is a dropdwn of transaction types, and for each one a different number of fields to be populated will be shown. 
+    - Values can either be copy pasted, or directly routed via dropdown selection. Maybe that is best.
+
+---
+
+### Milestone 4: Week 3 (Feb 12-18) - Total Transactions View
+
+- [ ] F6a: Fourth view - Consolidate all transactions into ordered view
+
+- [ ] F6b: Allow logical timestamp to be adjusted for reordering purposes
+
+- [ ] F6c: Upon every change, pooling calculations are recalculated
+
+- [ ] F6d: Taxable events are highlighted with interested values shown
+
+- [ ] F6e: Export functionality to print and share as pdf or xlsx.
+
+- [ ] F6f: Whenever an export happens, a snapshot of the app and tables is taken in order that the state can be replayed and reviewed in the future. This may require a setting in the settings section of the app to indicate if the app should run from the main tables, or from specific snapshots. Maybe too complex.
+
+---
+
+### Milestone 5: Week 4 (Feb 19-25) - Buckets Visualization View
+
+- [ ] F7a: Fifth view - Have every location and asset balance as a horizontal colour-coded bucket
+
+- [ ] F7b: Transactions are ordered left-to-right as arrows between buckets. This will show balances of each bucket before and after each transaction.
+
+- [ ] F7c: Transactions can be selected and grouped into txgroups. Each group will then be colour coded to visually associate them.
+
+- [ ] F7d: At any point in time (before/after each transaction) the user can hover the mouse to inspect ratios of assets invested in different locations, and average ROI for each asset at the point in time.
+
+- [ ] F8: Sixth view - Purchase review
+    - Any purchase transaction can be selected, which opens the Sixth view: Purchase review. This view shows the transaction details, the graph of the bought coin, a list of future transactions affecting balance of the asset, ROI from each transaction, and theoretical ROI if the asset was completely sold today. Also more simplistic view of ROI which is (total out + current total)/(total in).
+    - There should also be a list of purchases which can be browsed and sorted, with purchases able to be favourited.
+
+- [ ] F8: (optional) Asset Review sub-view
+    - Alternative to Purchase Review is Asset Review, where we simply see all transactions associated with the asset, and the gains results.
+
+---
+
+### Milestone 6: Week 5 (Jan 26 - Feb 1) - Data Validation & Polish
+
+- [ ] F9: Scan the fifth view to identify points where it looks like there is missing information, or missing transactions
+
+- [ ] F10: Final testing before tax deadline
+
+**HMRC UK Self-Assessment Tax Return online submission deadline: 31st January 2026.**
+
+---
 
 ## Future extensions:
 
 1. Income tracking: includes payslips, PAYE, NI, NI contributions tracking, Pensions contributions tracking.
 2. Budgeting plans: including goals, Siri integration to easily add spends.
 3. Forecasting: to plan large purchases or deposits, or to forecast different investment scenareos.
+
+---
+
+## AI Feedback (Dec 27, 2025)
+
+### Strengths:
+- Clear deadline awareness (Jan 31 tax submission)
+- Logical progression from setup → data input → review → visualization
+- Good breakdown of views with specific features
+- Practical features like logical timestamp reordering and taxable event highlighting
+
+### Concerns & Recommendations:
+
+**1. Timeline is aggressive** - 5 weeks to build entire app with OAuth, database, API integrations, multiple complex views, and PDF export.
+   - Consider starting with simpler MVP (weeks 1-2)
+   - Defer "nice-to-have" features like bucket visualization to post-deadline
+   - Focus on: import data → review/tag → export taxable events
+
+**2. Week 1 tooling questions are critical** - These decisions affect everything:
+   - **Recommendation**: Start with local-first approach (SQLite + static web frontend or Python/Tkinter desktop app)
+   - Defer cloud/OAuth until MVP proves valuable
+   - React Native seems overkill—consider Electron if you want web tech + desktop, or just Python
+
+**3. Data normalization is underspecified** - Week 1 schema planning needs more detail:
+   - How to handle different exchange formats?
+   - What's the transaction categorization taxonomy?
+   - How to match transfers between wallets?
+
+**4. Missing: Testing & data validation** - No time allocated for:
+   - Validating tax calculations
+   - Handling edge cases (forks, airdrops, staking)
+   - Data integrity checks
+
+**5. Bucket visualization (week 4-5) is complex** - Major feature that could take weeks alone. Consider making it post-deadline.
+
+### Suggested MVP-focused approach for Jan 31 deadline:
+- **Weeks 1-2**: Simple desktop app (Python + Tkinter/PyQt) with CSV import, basic transaction table, and SQLite
+- **Week 3**: Transaction categorization, taxable event calculations, manual adjustments
+- **Week 4**: Export functionality (CSV/XLSX with tax summary)
+- **Week 5**: Testing, edge cases, buffer time
+- **Post-deadline**: OAuth, bucket viz, advanced features
