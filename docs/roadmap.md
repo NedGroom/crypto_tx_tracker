@@ -2,7 +2,7 @@
 
 ## Roadmap Structure
 
-### Milestone 1: Week 0 (Jan 22-28) - Project Setup
+### Milestone 1: Week 0 (Feb 4-10) - Project Setup
 
 - [ ] D1: Tooling planning
     - Is this a desktop app?
@@ -10,6 +10,22 @@
     - Do we use cloud infrastructure or host server on PC which hosts database and web files, or are web files static on app?
     - How can I use something like reactnative with the above different options? Maybe its not suitable anyway. The advantage of cloud hosting is that it can be used on the user's phone aswell.
     - What tools are best for viewing maps of nodes and boxes etc, and allowing the developer to add dropdowns and have certain views of the app like a mindmap.
+    - **UI Requirements (key decision factor):**
+        - Data processing is not intensive - any platform will suffice
+        - **Primary concern is UI capabilities:**
+            - Tables within panels (multi-panel layouts with tables visible in each)
+            - Large scrollable canvas/map view for bucket visualization:
+                - Horizontal bars/buckets representing locations and assets
+                - Arrows between buckets representing transaction flows
+                - Pan/scroll in all directions (left/right/up/down)
+                - Default center positions
+                - Click handlers on individual arrows and bucket locations
+                - Very large canvas area requiring zoom/pan controls
+        - **Technology considerations:** Need framework with good support for:
+            - Panel/layout management
+            - Canvas/SVG rendering for bucket visualization
+            - Interactive elements with custom event handlers
+            - Smooth pan/zoom/scroll on large canvases
 
 - [ ] D2: Documentation and roadmapping setup
     - Document what are the best popular design principles, and what are the different aspects of a system which need to be well designed.
@@ -25,7 +41,7 @@
 
 ---
 
-### Milestone 2: Week 1 (Jan 29 - Feb 4) - Skeleton + Authentication + Data Input
+### Milestone 2: Week 1 (Feb 11-17) - Skeleton + Authentication + Data Input
 
 - [ ] F1: Host app such that it runs
 
@@ -38,7 +54,7 @@
 
 ---
 
-### Milestone 3: Week 2 (Feb 5-11) - Data Input Management View
+### Milestone 3: Week 2 (Feb 18-24) - Data Input Management View
 
 - [ ] F5a: Third view - Expand each input data chunk to view its representation as a view of its data in the tables
 
@@ -51,7 +67,7 @@
 
 ---
 
-### Milestone 4: Week 3 (Feb 12-18) - Total Transactions View
+### Milestone 4: Week 3 (Feb 25 - Mar 3) - Total Transactions View
 
 - [ ] F6a: Fourth view - Consolidate all transactions into ordered view
 
@@ -67,7 +83,7 @@
 
 ---
 
-### Milestone 5: Week 4 (Feb 19-25) - Buckets Visualization View
+### Milestone 5: Week 4 (Mar 4-10) - Buckets Visualization View
 
 - [ ] F7a: Fifth view - Have every location and asset balance as a horizontal colour-coded bucket
 
@@ -86,7 +102,7 @@
 
 ---
 
-### Milestone 6: Week 5 (Jan 26 - Feb 1) - Data Validation & Polish
+### Milestone 6: Week 5 (Mar 11-17) - Data Validation & Polish
 
 - [ ] F9: Scan the fifth view to identify points where it looks like there is missing information, or missing transactions
 
