@@ -21,7 +21,7 @@ export class AmplifyStack extends cdk.Stack {
         frontend: {
           phases: {
             preBuild: {
-              commands: ['cd app', 'npm ci'],
+              commands: ['cd app', 'npm ci --include=dev'],
             },
             build: {
               commands: ['npm run build'],
@@ -37,9 +37,9 @@ export class AmplifyStack extends cdk.Stack {
         },
       }),
       // Environment variables for the build (add more as needed)
-      environmentVariables: {
-        NODE_ENV: 'production',
-      },
+      // Note: do NOT set NODE_ENV=production here — it causes npm ci to skip
+      // devDependencies (typescript, vite, etc.) which are needed for the build.
+      environmentVariables: {},
     });
 
     // Connect the main branch — auto-deploys on every push
