@@ -1,0 +1,19 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.app h1 {
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+
+/* Responsive: smaller heading on mobile */
+@media (max-width: 600px) {
+  .app h1 {
+    font-size: 1.75rem;
+  }
+}

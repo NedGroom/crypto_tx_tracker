@@ -118,43 +118,4 @@
 2. Budgeting plans: including goals, Siri integration to easily add spends.
 3. Forecasting: to plan large purchases or deposits, or to forecast different investment scenareos.
 
----
 
-## AI Feedback (Dec 27, 2025)
-
-### Strengths:
-- Clear deadline awareness (Jan 31 tax submission)
-- Logical progression from setup → data input → review → visualization
-- Good breakdown of views with specific features
-- Practical features like logical timestamp reordering and taxable event highlighting
-
-### Concerns & Recommendations:
-
-**1. Timeline is aggressive** - 5 weeks to build entire app with OAuth, database, API integrations, multiple complex views, and PDF export.
-   - Consider starting with simpler MVP (weeks 1-2)
-   - Defer "nice-to-have" features like bucket visualization to post-deadline
-   - Focus on: import data → review/tag → export taxable events
-
-**2. Week 1 tooling questions are critical** - These decisions affect everything:
-   - **Recommendation**: Start with local-first approach (SQLite + static web frontend or Python/Tkinter desktop app)
-   - Defer cloud/OAuth until MVP proves valuable
-   - React Native seems overkill—consider Electron if you want web tech + desktop, or just Python
-
-**3. Data normalization is underspecified** - Week 1 schema planning needs more detail:
-   - How to handle different exchange formats?
-   - What's the transaction categorization taxonomy?
-   - How to match transfers between wallets?
-
-**4. Missing: Testing & data validation** - No time allocated for:
-   - Validating tax calculations
-   - Handling edge cases (forks, airdrops, staking)
-   - Data integrity checks
-
-**5. Bucket visualization (week 4-5) is complex** - Major feature that could take weeks alone. Consider making it post-deadline.
-
-### Suggested MVP-focused approach for Jan 31 deadline:
-- **Weeks 1-2**: Simple desktop app (Python + Tkinter/PyQt) with CSV import, basic transaction table, and SQLite
-- **Week 3**: Transaction categorization, taxable event calculations, manual adjustments
-- **Week 4**: Export functionality (CSV/XLSX with tax summary)
-- **Week 5**: Testing, edge cases, buffer time
-- **Post-deadline**: OAuth, bucket viz, advanced features
