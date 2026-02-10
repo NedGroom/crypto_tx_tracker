@@ -183,6 +183,24 @@ npm run preview
 # → serves app/dist/ on http://localhost:4173
 ```
 
+### Stopping the dev server
+Press `Ctrl+C` in the terminal to stop the Vite dev server.
+
+### Testing on a mobile device (same Wi-Fi)
+By default Vite only listens on `localhost`, which isn't reachable from other devices. To expose it on your local network:
+
+```bash
+npm run dev -- --host
+```
+
+This will show output like:
+```
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.1.42:5173/
+```
+
+Open the **Network** URL on your phone's browser (both devices must be on the same Wi-Fi). This is useful for testing responsive layout and touch interactions without deploying.
+
 ### What `npm run dev` does under the hood
 - Vite starts a local HTTP server.
 - It serves your source files using native ES module imports (no bundling step).
