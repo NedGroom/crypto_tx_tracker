@@ -42,6 +42,9 @@ This is a crypto transaction and taxable event tracker. The agent will:
 1. **Comments**: Add explanatory comments when writing code. Never remove user-written comments.
 2. **Commit Safety**: Ensure commits are made before major refactoring or adding new approaches
 3. **Sandbox Area**: Maintain a separate experimental area for testing features without affecting main code
+4. **Check before create**: Always verify a file does not already exist before using the create_file tool. If it exists, use an edit tool instead.
+5. **Read before edit**: Read the full contents of a file before modifying it — never edit based on summarised or stale context.
+6. **Design doc is source of truth**: Always read the relevant feature design document (`features/fN_*.md`) before implementing any task. Do not rely on conversation context or summarised attachments for implementation details.
 
 ## Feature Design Document Structure
 When writing a feature design document (in `features/`), use this standard structure:
@@ -74,6 +77,28 @@ When writing a feature design document (in `features/`), use this standard struc
 - If PowerShell variable interpolation is needed inside JSON, assign to a variable first: `$json = '{"key":"value"}'; aws ... --secret-string $json`
 - Append `2>&1` when you need to capture both stdout and stderr for verification.
 - The workspace runs from `C:\Users\ngroo\OneDrive\Documents\_Coding\crypto_tx_tracker`.
+- **CDK deploy safety**: Always run `npx tsc --noEmit` before any `cdk deploy` to catch type errors cheaply.
+- **Command Index**: Maintain the command index below with reusable CLI commands. When a command fails, replace it with the corrected version that works. This index persists across conversations so working commands are never lost.
+
+## Git Conventions
+- **Branch naming**: Feature branches follow `feature/fN/<short_name>` (e.g. `feature/f2/oauth_login`).
+- **Commit after each batch**: The agent commits immediately after completing each implementation batch.
+- **Commit messages**: Include that this was AI-generated code for the batch. Format: `feat(fN): Batch X — <summary> [ai]` (e.g. `feat(f2): Batch B — CDK auth stack, config, amplify-stack env vars [ai]`).
+- **Batch release notes**: After completing a batch, write a brief summary to `docs/release_notes/` recording what was created, changed, and manually configured. This makes all information easy to find later.
+
+### Command Index
+<!-- Keep this list updated: add new reusable commands, replace broken ones with working versions -->
+
+| Command | Purpose | Run From |
+|---|---|---|
+| `npx tsc --noEmit 2>&1` | Type-check infra code without emitting | `infra/` |
+| `npx cdk deploy AuthStack 2>&1` | Deploy Cognito auth stack | `infra/` |
+| `npx cdk deploy --all 2>&1` | Deploy all CDK stacks | `infra/` |
+| `npx cdk diff 2>&1` | Preview CDK changes before deploy | `infra/` |
+| `npm run build 2>&1` | Build the frontend app | `app/` |
+| `npm run dev` | Start Vite dev server | `app/` |
+| `aws secretsmanager get-secret-value --secret-id <name> --region eu-west-2 2>&1` | Read a secret from Secrets Manager | anywhere |
+| `$json = '{"key":"val"}'; aws secretsmanager create-secret --name <name> --region eu-west-2 --secret-string $json 2>&1` | Create a Secrets Manager secret (PowerShell-safe) | anywhere |
 
 ## Research & Clarification
 - Search for developer guides and documentation for crypto platforms
