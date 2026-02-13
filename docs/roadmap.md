@@ -117,5 +117,13 @@
 1. Income tracking: includes payslips, PAYE, NI, NI contributions tracking, Pensions contributions tracking.
 2. Budgeting plans: including goals, Siri integration to easily add spends.
 3. Forecasting: to plan large purchases or deposits, or to forecast different investment scenareos.
+4. Age verification & user profile data: require users to confirm they are over 18 before accessing the app. Google OAuth does not expose age/DOB, so this would need either self-declaration or a third-party identity verification service (e.g. Yoti, Onfido). Beyond age, consider collecting additional user data for future features:
+    - **Date of birth** — age verification, and some tax jurisdictions use age for allowance calculations (e.g. UK CGT annual exempt amount)
+    - **Country of tax residence** — determines which tax rules apply (UK HMRC vs US IRS vs EU), reporting currency, allowable deductions, and tax year boundaries (UK: 6 Apr–5 Apr; US: calendar year)
+    - **Address** — required for formal tax filings, bank/exchange KYC verification, and jurisdiction-specific reporting (e.g. US state-level taxes)
+    - **National Insurance number / Tax ID (TIN/SSN)** — needed for self-assessment submissions and API integrations with tax authorities
+    - **Base currency** — GBP, USD, EUR etc. for portfolio valuation, gain/loss calculations, and reporting
+    - **Tax filing status** — e.g. individual vs business, employed vs self-employed — affects allowances and reporting requirements
+    - **Preferred name / display name** — currently pulled from Google profile, but user may want to override for formal reports
 
 

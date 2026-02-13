@@ -76,6 +76,7 @@ When writing a feature design document (in `features/`), use this standard struc
 ## Terminal & CLI
 - **PowerShell JSON quoting**: Use single-quoted strings for JSON arguments to AWS CLI and similar tools: `'{"key":"value"}'`. Never use backslash escapes (`\"`) — that's bash syntax and silently produces malformed JSON in PowerShell.
 - If PowerShell variable interpolation is needed inside JSON, assign to a variable first: `$json = '{"key":"value"}'; aws ... --secret-string $json`
+- **PowerShell quote stripping**: Even single-quoted `$json` can lose inner quotes when passed to external commands. If the secret still arrives unquoted, use the **file-based** workaround: write JSON to a temp file with `Out-File -Encoding ascii -NoNewline`, then pass `file://<path>` to the AWS CLI.
 - Append `2>&1` when you need to capture both stdout and stderr for verification.
 - The workspace runs from `C:\Users\ngroo\OneDrive\Documents\_Coding\crypto_tx_tracker`.
 - **CDK deploy safety**: Always run `npx tsc --noEmit` before any `cdk deploy` to catch type errors cheaply.
@@ -85,7 +86,7 @@ When writing a feature design document (in `features/`), use this standard struc
 - **Branch naming**: Feature branches follow `feature/fN/<short_name>` (e.g. `feature/f2/oauth_login`).
 - **Commit after each batch**: The agent commits immediately after completing each implementation batch.
 - **Commit messages**: Include that this was AI-generated code for the batch. Format: `feat(fN): Batch X — <summary> [ai]` (e.g. `feat(f2): Batch B — CDK auth stack, config, amplify-stack env vars [ai]`).
-- **Batch release notes**: After completing a batch, write a brief summary to `docs/release_notes/` recording what was created, changed, and manually configured. This makes all information easy to find later.
+- **Batch release notes**: After completing a batch, write a brief summary to `docs/release_notes/` recording what was created, changed, and manually configured. Before writing the summary, re-read the conversation history since the last batch commit to recall the full sequence of events — including errors, fixes, manual steps, and workarounds — so the release note captures what actually happened, not just what was planned.
 
 ### Command Index
 <!-- Keep this list updated: add new reusable commands, replace broken ones with working versions -->
@@ -98,8 +99,11 @@ When writing a feature design document (in `features/`), use this standard struc
 | `npx cdk diff 2>&1` | Preview CDK changes before deploy | `infra/` |
 | `npm run build 2>&1` | Build the frontend app | `app/` |
 | `npm run dev` | Start Vite dev server | `app/` |
-| `aws secretsmanager get-secret-value --secret-id <name> --region eu-west-2 2>&1` | Read a secret from Secrets Manager | anywhere |
+| `aws secretsmanager get-secret-value --secret-id <name> --region eu-west-2 --output json 2>&1` | Read a secret from Secrets Manager | anywhere |
 | `$json = '{"key":"val"}'; aws secretsmanager create-secret --name <name> --region eu-west-2 --secret-string $json 2>&1` | Create a Secrets Manager secret (PowerShell-safe) | anywhere |
+| `'{"key":"val"}' \| Out-File -Encoding ascii -NoNewline $env:TEMP\secret.json; aws secretsmanager put-secret-value --secret-id <name> --region eu-west-2 --secret-string file://$env:TEMP\secret.json 2>&1` | Update a secret (file-based, avoids PS quote stripping) | anywhere |
+| `aws cloudformation delete-stack --stack-name <name> --region eu-west-2 2>&1` | Delete a failed/rollback CloudFormation stack | anywhere |
+| `aws cloudformation describe-stacks --stack-name <name> --region eu-west-2 2>&1` | Check CloudFormation stack status | anywhere |
 
 ## Research & Clarification
 - Search for developer guides and documentation for crypto platforms
