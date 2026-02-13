@@ -74,6 +74,7 @@ When writing a feature design document (in `features/`), use this standard struc
 - If unsure whether it's a permanent rule or a one-off preference, ask.
 
 ## Terminal & CLI
+- **Foreground terminals only**: Always run commands in foreground (non-background) terminals so Ned can see the request and response in real-time. Never use background terminals.
 - **PowerShell JSON quoting**: Use single-quoted strings for JSON arguments to AWS CLI and similar tools: `'{"key":"value"}'`. Never use backslash escapes (`\"`) — that's bash syntax and silently produces malformed JSON in PowerShell.
 - If PowerShell variable interpolation is needed inside JSON, assign to a variable first: `$json = '{"key":"value"}'; aws ... --secret-string $json`
 - **PowerShell quote stripping**: Even single-quoted `$json` can lose inner quotes when passed to external commands. If the secret still arrives unquoted, use the **file-based** workaround: write JSON to a temp file with `Out-File -Encoding ascii -NoNewline`, then pass `file://<path>` to the AWS CLI.
