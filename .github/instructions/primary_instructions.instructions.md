@@ -45,6 +45,7 @@ This is a crypto transaction and taxable event tracker. The agent will:
 4. **Check before create**: Always verify a file does not already exist before using the create_file tool. If it exists, use an edit tool instead.
 5. **Read before edit**: Read the full contents of a file before modifying it — never edit based on summarised or stale context.
 6. **Design doc is source of truth**: Always read the relevant feature design document (`features/fN_*.md`) before implementing any task. Do not rely on conversation context or summarised attachments for implementation details.
+7. **Testing moments**: During implementation, proactively point out suitable moments when Ned could manually test or verify changes (e.g. after a deploy, after a build, after wiring a new component). Don't wait until the end — flag intermediate checkpoints.
 
 ## Feature Design Document Structure
 When writing a feature design document (in `features/`), use this standard structure:
