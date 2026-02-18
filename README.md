@@ -7,6 +7,7 @@ Investment and taxable event tracker focused around crypto transactions.
 - [Installation](#installation)
 - [Quick start](#quick-start)
 - [Usage](#usage)
+- [Deployment](#deployment)
 - [Configuration](#configuration)
 - [Architecture](#architecture)
 - [Roadmap](#roadmap)
@@ -35,6 +36,9 @@ Clone the repository and follow the setup steps in the `docs/` folder.
 
 ## Usage
 Describe how to import transactions, review data, and generate reports. Add screenshots or examples in `docs/` as needed.
+
+## Deployment
+The app is hosted on **AWS Amplify** and auto-deploys on push to `main`. To trigger a manual build or deploy infrastructure changes, see the [Deploy section in SETUP.md](SETUP.md#deploy).
 
 ## Configuration
 List configuration options (API keys, file paths, environment variables) and where to set them.

@@ -105,6 +105,8 @@ When writing a feature design document (in `features/`), use this standard struc
 | `'{"key":"val"}' \| Out-File -Encoding ascii -NoNewline $env:TEMP\secret.json; aws secretsmanager put-secret-value --secret-id <name> --region eu-west-2 --secret-string file://$env:TEMP\secret.json 2>&1` | Update a secret (file-based, avoids PS quote stripping) | anywhere |
 | `aws cloudformation delete-stack --stack-name <name> --region eu-west-2 2>&1` | Delete a failed/rollback CloudFormation stack | anywhere |
 | `aws cloudformation describe-stacks --stack-name <name> --region eu-west-2 2>&1` | Check CloudFormation stack status | anywhere |
+| `aws amplify start-job --app-id d3augyns3og6c7 --branch-name main --job-type RELEASE --region eu-west-2 2>&1` | Trigger manual Amplify build | anywhere |
+| `aws amplify list-jobs --app-id d3augyns3og6c7 --branch-name main --region eu-west-2 --max-results 1 2>&1` | Check latest Amplify build status | anywhere |
 
 ## Research & Clarification
 - Search for developer guides and documentation for crypto platforms

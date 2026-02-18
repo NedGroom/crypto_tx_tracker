@@ -102,12 +102,30 @@ aws secretsmanager create-secret --name github-token --secret-string "ghp_YOUR_T
 
 ## Deploy
 
+### CDK Infrastructure
+
 ```powershell
 cd infra
-npx cdk deploy
+npx cdk deploy --all
 ```
 
-This creates the Amplify app in AWS. After the first deploy, Amplify auto-deploys on every push to `main`.
+This creates/updates the AWS infrastructure (Cognito, Amplify hosting, etc.).
+
+### Frontend (Amplify)
+
+Amplify auto-deploys on every push to `main`. If you need to trigger a build manually (e.g. after updating environment variables, or when a git push isn't possible):
+
+```powershell
+aws amplify start-job --app-id d3augyns3og6c7 --branch-name main --job-type RELEASE --region eu-west-2
+```
+
+Check build status:
+
+```powershell
+aws amplify list-jobs --app-id d3augyns3og6c7 --branch-name main --region eu-west-2 --max-results 1
+```
+
+Or view the build in the [Amplify Console](https://eu-west-2.console.aws.amazon.com/amplify/apps/d3augyns3og6c7).
 
 ---
 
@@ -119,6 +137,8 @@ This creates the Amplify app in AWS. After the first deploy, Amplify auto-deploy
 | `npm run dev -- --host` | `app/` | Dev server accessible on local network (mobile testing) |
 | `npm run ci` | `app/` | Run full lint/type/format/build check |
 | `npm run build` | `app/` | Production build to `app/dist/` |
-| `npx cdk deploy` | `infra/` | Deploy infrastructure changes |
+| `npx cdk deploy --all` | `infra/` | Deploy all infrastructure stacks |
 | `npx cdk diff` | `infra/` | Preview infrastructure changes without deploying |
 | `npx cdk destroy` | `infra/` | Tear down all infrastructure |
+| `aws amplify start-job --app-id d3augyns3og6c7 --branch-name main --job-type RELEASE --region eu-west-2` | anywhere | Trigger manual Amplify build |
+| `aws amplify list-jobs --app-id d3augyns3og6c7 --branch-name main --region eu-west-2 --max-results 1` | anywhere | Check latest Amplify build status |
