@@ -13,6 +13,7 @@ import {
   logout,
 } from '../store/authSlice';
 import { useAuthInit } from '../hooks/useAuthInit';
+import BottomNav from './BottomNav';
 
 function AppLayout() {
   // Check for existing session on mount and sync to Redux
@@ -49,6 +50,7 @@ function AppLayout() {
       <main>
         <Outlet />
       </main>
+      <BottomNav />
     </div>
   );
 }

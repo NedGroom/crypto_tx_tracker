@@ -4,11 +4,12 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
+import dataSourcesReducer from './dataSourcesSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    // Future slices (e.g. transactions, settings) will be added here
+    dataSources: dataSourcesReducer,
   },
 });
 

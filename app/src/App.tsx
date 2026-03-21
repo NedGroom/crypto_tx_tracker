@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
+import DataSourcesPage from './pages/DataSourcesPage';
 import './styles/App.css';
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
         {/* Protected routes — AppLayout checks auth and renders Outlet */}
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
-          {/* Future feature routes (F3, F4, ...) are added here as siblings */}
+          <Route path="/data-sources" element={<DataSourcesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

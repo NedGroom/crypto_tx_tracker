@@ -47,7 +47,9 @@
 
 - [ ] F2: Setup google OAuth to log in to app
 
-- [ ] F3: First view - Exchange authentication page for inputting keys
+- [ ] F3: First view - View and add data sources, in new view selected from menu bar at bottom of page. For each data source added, the user is able to add API keys. (Frontend-only — state in Redux, lost on refresh.)
+
+- [ ] F3.5: Backend persistence for data sources — DynamoDB table, API Gateway + Lambda CRUD endpoints, Cognito authoriser, KMS encryption for API credentials. Replaces in-memory Redux storage with server-side persistence.
 
 - [ ] F4a: Second view - Data input section (file upload - xlsx)
 - [ ] F4b: Second view - Data input section (API requests)
