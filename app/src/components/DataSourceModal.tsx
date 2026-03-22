@@ -3,15 +3,16 @@
 // Uses the native <dialog> element — no library needed.
 
 import { useRef, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { platforms, getPlatformById } from '../data/platforms';
 import {
-  addSource,
-  updateSource,
-  removeSource,
-  setCredentials,
+  createDataSource,
+  updateDataSource,
+  deleteDataSource,
+  selectDataSourcesLoading,
 } from '../store/dataSourcesSlice';
 import type { DataSource } from '../store/dataSourcesSlice';
+import type { AppDispatch } from '../store/index';
 
 interface DataSourceModalProps {
   open: boolean;
@@ -25,7 +26,8 @@ function DataSourceModal({
   existingSource,
 }: DataSourceModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const saving = useSelector(selectDataSourcesLoading);
 
   const isEdit = Boolean(existingSource);
 
@@ -122,17 +124,19 @@ function DataSourceModal({
     if (isEdit && existingSource) {
       // Update existing source
       dispatch(
-        updateSource({
+        updateDataSource({
           id: existingSource.id,
-          displayName: resolvedDisplayName,
-          // Only update credentials if the user was actively editing them
-          ...(editingCredentials && { credentials }),
+          changes: {
+            displayName: resolvedDisplayName,
+            // Only update credentials if the user was actively editing them
+            ...(editingCredentials && { credentials }),
+          },
         }),
       );
     } else {
       // Add new source
       dispatch(
-        addSource({
+        createDataSource({
           platformId,
           ...(platformId === 'custom' && {
             customPlatformName: customName.trim(),
@@ -152,7 +156,7 @@ function DataSourceModal({
     if (!existingSource) return;
     const name = existingSource.displayName || defaultDisplayName();
     if (window.confirm(`Delete "${name}"? This cannot be undone.`)) {
-      dispatch(removeSource(existingSource.id));
+      dispatch(deleteDataSource(existingSource.id));
       onClose();
     }
   };
@@ -162,7 +166,12 @@ function DataSourceModal({
   const handleRemoveCredentials = () => {
     if (!existingSource) return;
     if (window.confirm('Remove API credentials from this data source?')) {
-      dispatch(setCredentials({ id: existingSource.id, credentials: null }));
+      dispatch(
+        updateDataSource({
+          id: existingSource.id,
+          changes: { credentials: null },
+        }),
+      );
       onClose();
     }
   };
@@ -299,8 +308,8 @@ function DataSourceModal({
 
         {/* Action buttons */}
         <div className="modal-actions">
-          <button type="submit" className="btn-primary">
-            Save
+          <button type="submit" className="btn-primary" disabled={saving}>
+            {saving ? 'Saving…' : 'Save'}
           </button>
           <button type="button" onClick={onClose}>
             Cancel

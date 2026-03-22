@@ -51,6 +51,30 @@ Should return your account ID and user ARN.
 
 Already installed if you cloned this repo. Verify: `git --version`
 
+### 4. Terraform (≥ 1.5)
+
+Required for provisioning the Supabase project.
+
+```bash
+brew install terraform
+```
+
+Verify: `terraform --version`
+
+### 5. Supabase CLI
+
+Used for pushing config and migrations to the Supabase project.
+
+```bash
+brew install supabase/tap/supabase
+```
+
+If that fails due to Xcode CLI tools, use npx instead — it works without installation:
+
+```bash
+npx supabase --version
+```
+
 ---
 
 ## Project Setup
@@ -97,6 +121,65 @@ Amplify needs a GitHub Personal Access Token to clone the repo and set up webhoo
 ```powershell
 aws secretsmanager create-secret --name github-token --secret-string "ghp_YOUR_TOKEN_HERE" --region eu-west-2
 ```
+
+---
+
+## Supabase One-Time Setup
+
+### 1. Provision the Supabase Project (Terraform)
+
+1. Get a Supabase access token from [supabase.com/dashboard/account/tokens](https://supabase.com/dashboard/account/tokens)
+2. Get your organization ID from the Supabase dashboard URL
+3. Create `infra/terraform/terraform.tfvars` (gitignored):
+
+```hcl
+supabase_access_token = "sbp_..."
+supabase_org_id       = "<org-id>"
+supabase_db_password   = "<strong-random-password>"
+```
+
+4. Apply:
+
+```bash
+cd infra/terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+Note the `project_url` and `project_ref` outputs. To retrieve the anon key:
+
+```bash
+terraform output -raw anon_key
+```
+
+### 2. Configure Cognito Third-Party Auth
+
+Link the Supabase project and push config:
+
+```bash
+npx supabase login
+npx supabase link --project-ref <project-ref>
+npx supabase config push
+```
+
+The `supabase/config.toml` already has `[auth.third_party.aws_cognito]` enabled with the correct User Pool ID.
+
+### 3. Run the Database Migration
+
+```bash
+npx supabase db push
+```
+
+This creates the `data_sources` table and RLS policies from `supabase/migrations/`.
+
+### 4. Set Frontend Environment Variables
+
+Create `app/.env` (gitignored) — see `app/.env.example` for the template. Fill in:
+
+- `VITE_SUPABASE_URL` — from Terraform output `project_url`
+- `VITE_SUPABASE_ANON_KEY` — from `terraform output -raw anon_key`
+- `VITE_ENCRYPTION_KEY` — generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 
 ---
 

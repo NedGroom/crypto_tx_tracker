@@ -1,15 +1,33 @@
 // app/src/pages/DataSourcesPage.tsx
 // Lists all configured data sources and lets the user add/edit/delete them.
 
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { selectAllSources } from '../store/dataSourcesSlice';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectAllSources,
+  selectDataSourcesLoading,
+  selectDataSourcesError,
+  fetchDataSources,
+} from '../store/dataSourcesSlice';
+import { selectIsAuthenticated } from '../store/authSlice';
 import type { DataSource } from '../store/dataSourcesSlice';
+import type { AppDispatch } from '../store/index';
 import { getPlatformById } from '../data/platforms';
 import DataSourceModal from '../components/DataSourceModal';
 
 function DataSourcesPage() {
+  const dispatch = useDispatch<AppDispatch>();
   const sources = useSelector(selectAllSources);
+  const loading = useSelector(selectDataSourcesLoading);
+  const error = useSelector(selectDataSourcesError);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
+  // Fetch data sources from Supabase when the user is authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchDataSources());
+    }
+  }, [dispatch, isAuthenticated]);
 
   // Modal state — null means closed; a DataSource means editing; 'new' means adding
   const [modalState, setModalState] = useState<DataSource | 'new' | null>(null);
@@ -39,7 +57,15 @@ function DataSourcesPage() {
         </button>
       </div>
 
-      {sources.length === 0 ? (
+      {error && (
+        <p className="error-banner" role="alert">
+          {error}
+        </p>
+      )}
+
+      {loading && sources.length === 0 ? (
+        <p className="loading-state">Loading data sources…</p>
+      ) : sources.length === 0 ? (
         <p className="empty-state">
           No data sources yet. Add one to get started.
         </p>

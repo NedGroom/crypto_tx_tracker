@@ -4,6 +4,8 @@
 
 import * as cdk from 'aws-cdk-lib';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as path from 'path';
 import { Construct } from 'constructs';
 import { cdkConfig } from './config';
 
@@ -42,6 +44,25 @@ export class AuthStack extends cdk.Stack {
       // RETAIN so the user pool survives accidental stack deletion
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
+
+    // ---------------------------------------------------------------
+    // 1b. Pre-Token Generation Lambda trigger
+    // ---------------------------------------------------------------
+    // Adds a "role": "authenticated" claim to Cognito JWTs so that
+    // Supabase assigns the authenticated Postgres role (not anon).
+    const preTokenFn = new lambda.Function(this, 'PreTokenGenerationFn', {
+      functionName: 'crypto-tx-tracker-pre-token-generation',
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(
+        path.join(__dirname, '..', 'lambda', 'pre-token-generation'),
+      ),
+    });
+
+    userPool.addTrigger(
+      cognito.UserPoolOperation.PRE_TOKEN_GENERATION,
+      preTokenFn,
+    );
 
     // ---------------------------------------------------------------
     // 2. Hosted UI domain prefix
