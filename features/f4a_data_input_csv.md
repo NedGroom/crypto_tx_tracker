@@ -41,8 +41,8 @@ For this stage we optimize for simpler implementation and easier querying during
    - File input (`.csv`)
    - Description (text, optional)
    - Import type dropdown including `Other`
-   - Export start date (optional)
-   - Export end date (optional)
+   - Export start datetime (optional, native `datetime-local` picker)
+   - Export end datetime (optional, native `datetime-local` picker)
 5. Persist CSV import metadata and full export JSON in backend (`raw_exports`).
 6. Keep current edit behavior but move edit action to an explicit `Edit` button on each row.
 7. Do not implement API import execution in F4a.
@@ -159,8 +159,8 @@ Create a new migration adding `public.raw_exports` with:
 - `import_type text not null`
 - `description text`
 - `source_file_name text`
-- `export_start_date date`
-- `export_end_date date`
+- `export_start_date timestamptz`
+- `export_end_date timestamptz`
 - `row_count integer`
 - `column_list jsonb not null default '[]'::jsonb`
 - `payload_jsonb jsonb not null`
@@ -246,8 +246,8 @@ Fields:
   - Transfers
   - Rewards
   - Other
-- `Export start date` input (optional)
-- `Export end date` input (optional)
+- `Export start datetime` input (optional, native `datetime-local`)
+- `Export end datetime` input (optional, native `datetime-local`)
 
 Validation:
 - file required

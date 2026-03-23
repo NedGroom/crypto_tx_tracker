@@ -157,6 +157,44 @@
   width: 100%;
 }
 
+.source-card-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.expand-toggle {
+  margin-top: 0.15rem;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: transparent;
+  color: #bbb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.expand-toggle:hover {
+  border-color: #646cff;
+  color: #646cff;
+}
+
+.expand-toggle-icon {
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+
+.expand-toggle[aria-expanded='true'] .expand-toggle-icon {
+  transform: rotate(45deg);
+}
+
 .source-card-info {
   display: flex;
   flex-direction: column;
@@ -488,6 +526,10 @@
   .source-card-main {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .source-card-left {
+    width: 100%;
   }
 
   .source-card-actions {

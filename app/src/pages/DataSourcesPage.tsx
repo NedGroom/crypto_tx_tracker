@@ -76,6 +76,12 @@ function DataSourcesPage() {
   const openEdit = (source: DataSource) => setModalState(source);
   const closeModal = () => setModalState(null);
 
+  const toIsoFromLocalDateTime = (value: string): string | null => {
+    if (!value) return null;
+    const dt = new Date(value);
+    return Number.isNaN(dt.getTime()) ? null : dt.toISOString();
+  };
+
   const toggleExpand = (sourceId: string) => {
     const next = expandedSourceId === sourceId ? null : sourceId;
     setExpandedSourceId(next);
@@ -125,14 +131,17 @@ function DataSourcesPage() {
     setCsvFormError(null);
 
     try {
+      const exportStartDate = toIsoFromLocalDateTime(csvExportStartDate);
+      const exportEndDate = toIsoFromLocalDateTime(csvExportEndDate);
+
       await dispatch(
         createCsvRawExport({
           dataSourceId: sourceId,
           file: csvFile,
           description: csvDescription.trim(),
           importType: csvImportType,
-          exportStartDate: csvExportStartDate || null,
-          exportEndDate: csvExportEndDate || null,
+          exportStartDate,
+          exportEndDate,
         }),
       ).unwrap();
 
@@ -198,11 +207,26 @@ function DataSourcesPage() {
             return (
               <li key={source.id} className="source-card">
                 <div className="source-card-main">
-                  <div className="source-card-info">
-                    <span className="source-card-primary">{primary}</span>
-                    {secondary && (
-                      <span className="source-card-secondary">{secondary}</span>
-                    )}
+                  <div className="source-card-left">
+                    <button
+                      type="button"
+                      className="expand-toggle"
+                      onClick={() => toggleExpand(source.id)}
+                      aria-expanded={isExpanded}
+                      aria-label={
+                        isExpanded ? 'Collapse source' : 'Expand source'
+                      }
+                    >
+                      <span className="expand-toggle-icon" aria-hidden="true" />
+                    </button>
+                    <div className="source-card-info">
+                      <span className="source-card-primary">{primary}</span>
+                      {secondary && (
+                        <span className="source-card-secondary">
+                          {secondary}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="source-card-actions">
                     <span
@@ -216,13 +240,6 @@ function DataSourcesPage() {
                       onClick={() => openEdit(source)}
                     >
                       Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-secondary"
-                      onClick={() => toggleExpand(source.id)}
-                    >
-                      {isExpanded ? 'Collapse' : 'Expand'}
                     </button>
                   </div>
                 </div>
@@ -238,23 +255,23 @@ function DataSourcesPage() {
                         className="btn-primary"
                         onClick={() => toggleCsvForm(source.id)}
                       >
-                        {showCsvForm ? 'Cancel CSV Import' : 'Import CSV'}
+                        {showCsvForm ? 'Cancel File Import' : 'Import CSV/XLSX'}
                       </button>
                     </div>
 
                     {showCsvForm && (
                       <div className="csv-import-form">
-                        <h4>Import CSV</h4>
+                        <h4>Import CSV/XLSX</h4>
                         {csvFormError && (
                           <p className="modal-error" role="alert">
                             {csvFormError}
                           </p>
                         )}
                         <label>
-                          CSV File
+                          File (CSV or XLSX)
                           <input
                             type="file"
-                            accept=".csv"
+                            accept=".csv,.xlsx"
                             onChange={(e) => {
                               setCsvFile(e.target.files?.[0] ?? null);
                             }}
@@ -287,7 +304,7 @@ function DataSourcesPage() {
                         <label>
                           Export start date (optional)
                           <input
-                            type="date"
+                            type="datetime-local"
                             value={csvExportStartDate}
                             onChange={(e) =>
                               setCsvExportStartDate(e.target.value)
@@ -297,7 +314,7 @@ function DataSourcesPage() {
                         <label>
                           Export end date (optional)
                           <input
-                            type="date"
+                            type="datetime-local"
                             value={csvExportEndDate}
                             onChange={(e) =>
                               setCsvExportEndDate(e.target.value)
@@ -350,7 +367,7 @@ function DataSourcesPage() {
                                 <td>{chunk.status}</td>
                                 <td>
                                   {chunk.exportStartDate || chunk.exportEndDate
-                                    ? `${chunk.exportStartDate || '—'} to ${chunk.exportEndDate || '—'}`
+                                    ? `${chunk.exportStartDate ? new Date(chunk.exportStartDate).toLocaleString() : '—'} to ${chunk.exportEndDate ? new Date(chunk.exportEndDate).toLocaleString() : '—'}`
                                     : '—'}
                                 </td>
                                 <td>{chunk.description || '—'}</td>
@@ -411,11 +428,15 @@ function DataSourcesPage() {
               </p>
               <p>
                 <strong>Export start date:</strong>{' '}
-                {detailsChunk.exportStartDate || '—'}
+                {detailsChunk.exportStartDate
+                  ? new Date(detailsChunk.exportStartDate).toLocaleString()
+                  : '—'}
               </p>
               <p>
                 <strong>Export end date:</strong>{' '}
-                {detailsChunk.exportEndDate || '—'}
+                {detailsChunk.exportEndDate
+                  ? new Date(detailsChunk.exportEndDate).toLocaleString()
+                  : '—'}
               </p>
               <p>
                 <strong>Rows:</strong> {detailsChunk.rowCount}

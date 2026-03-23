@@ -2,6 +2,7 @@
 // Service for raw CSV export chunks stored in Supabase.
 
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import { supabase } from '../config/supabase';
 import type {
   RawExportChunk,
@@ -11,7 +12,7 @@ import type {
   RawExportPayloadRow,
 } from '../store/rawExportsSlice';
 
-const MAX_CSV_BYTES = 1 * 1024 * 1024; // 1MB hard limit for F4a
+const MAX_IMPORT_BYTES = 1 * 1024 * 1024; // 1MB hard limit for F4a
 
 interface RawExportRow {
   id: string;
@@ -118,6 +119,46 @@ function parseCsvFile(file: File): Promise<{
   });
 }
 
+async function parseXlsxFile(file: File): Promise<{
+  rows: RawExportPayloadRow[];
+  columns: string[];
+}> {
+  const buffer = await file.arrayBuffer();
+  const workbook = XLSX.read(buffer, { type: 'array' });
+  const firstSheetName = workbook.SheetNames[0];
+
+  if (!firstSheetName) {
+    throw new Error('XLSX file has no sheets');
+  }
+
+  const worksheet = workbook.Sheets[firstSheetName];
+  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet, {
+    defval: '',
+    raw: false,
+  });
+
+  const parsedRows: RawExportPayloadRow[] = rows.map((row) => {
+    const parsed: RawExportPayloadRow = {};
+    Object.entries(row).forEach(([key, value]) => {
+      parsed[key] = value == null ? '' : String(value);
+    });
+    return parsed;
+  });
+
+  const columns =
+    parsedRows.length > 0
+      ? Object.keys(parsedRows[0])
+      : ((
+          XLSX.utils.sheet_to_json(worksheet, {
+            header: 1,
+            blankrows: false,
+            raw: false,
+          })[0] as unknown[] | undefined
+        )?.map((cell) => String(cell)) ?? []);
+
+  return { rows: parsedRows, columns };
+}
+
 export async function listByDataSource(
   dataSourceId: string,
 ): Promise<RawExportChunk[]> {
@@ -155,17 +196,23 @@ export async function createCsvImport(input: {
   exportStartDate: string | null;
   exportEndDate: string | null;
 }): Promise<RawExportChunk> {
-  if (!input.file.name.toLowerCase().endsWith('.csv')) {
-    throw new Error('Only CSV files are supported');
+  const lowerName = input.file.name.toLowerCase();
+  const isCsv = lowerName.endsWith('.csv');
+  const isXlsx = lowerName.endsWith('.xlsx');
+
+  if (!isCsv && !isXlsx) {
+    throw new Error('Only CSV and XLSX files are supported');
   }
 
-  if (input.file.size > MAX_CSV_BYTES) {
+  if (input.file.size > MAX_IMPORT_BYTES) {
     throw new Error(
-      'CSV file is too large. Split the export into files under 1MB.',
+      'Import file is too large. Split the export into files under 1MB.',
     );
   }
 
-  const { rows, columns } = await parseCsvFile(input.file);
+  const { rows, columns } = isCsv
+    ? await parseCsvFile(input.file)
+    : await parseXlsxFile(input.file);
 
   const { data, error } = await supabase
     .from('raw_exports')
