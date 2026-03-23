@@ -5,11 +5,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
 import dataSourcesReducer from './dataSourcesSlice';
+import rawExportsReducer from './rawExportsSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     dataSources: dataSourcesReducer,
+    rawExports: rawExportsReducer,
   },
 });
 

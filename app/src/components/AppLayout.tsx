@@ -25,8 +25,16 @@ function AppLayout() {
   const dispatch = useDispatch();
 
   const handleSignOut = async () => {
-    await signOut();
-    dispatch(logout());
+    try {
+      await signOut({
+        global: true,
+        oauth: {
+          redirectUrl: `${window.location.origin}/login`,
+        },
+      });
+    } finally {
+      dispatch(logout());
+    }
   };
 
   // While checking session, show a loading indicator (prevents flash of login page)

@@ -3,6 +3,7 @@ import AppLayout from './components/AppLayout';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import DataSourcesPage from './pages/DataSourcesPage';
+import RawExportDataPage from './pages/RawExportDataPage';
 import './styles/App.css';
 
 function App() {
@@ -16,6 +17,10 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/data-sources" element={<DataSourcesPage />} />
+          <Route
+            path="/data-sources/raw-exports/:rawExportId"
+            element={<RawExportDataPage />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
